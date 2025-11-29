@@ -4,9 +4,6 @@ plugins {
     id 'java'
 }
 
-group = gradle.projectGroup
-version = gradle.projectVersion
-
 tasks {
     shadowJar {
         archiveBaseName.set("${project.name}")
@@ -15,7 +12,6 @@ tasks {
 
     runServer {
         minecraftVersion("1.21.8")
-        jvmArgs("-Xms2G", "-Xmx2G")
     }
 }
 
@@ -30,7 +26,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 }
 
-def targetJavaVersion = gradle.javaVersion as int
+def targetJavaVersion = javaVersion as int
 
 java {
     sourceCompatibility = JavaVersion.toVersion(targetJavaVersion)
@@ -54,7 +50,7 @@ processResources {
         version: project.version,
         group: project.group,
         name: project.name,
-        apiVersion: gradle.apiVersion
+        apiVersion: apiVersion
     ]
 
     inputs.properties props
