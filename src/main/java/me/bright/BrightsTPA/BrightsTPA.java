@@ -6,7 +6,7 @@ public final class BrightsTPA extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Plugin Loadedsssss!");
+        getLogger().info("Plugin Loaded!");
     }
 
     @Override
