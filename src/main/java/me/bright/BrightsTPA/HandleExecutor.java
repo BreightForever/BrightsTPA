@@ -5,297 +5,346 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static me.bright.BrightsTPA.BrightsTPA.LEGACY;
 
 public record HandleExecutor(BrightsTPA plugin) implements me.bright.BrightsTPA.Format.String {
 
-    static HashMap<UUID, UUID> tpaMap = new HashMap<>();
-    static HashMap<UUID, UUID> tpahereMap = new HashMap<>();
-    static HashMap<UUID, Long> commandCooldownsMap = new HashMap<>();
-    static HashMap<UUID, Long> requestCooldownsMap = new HashMap<>();
+    private static final HashMap<UUID, UUID> tpaMap = new HashMap<>();
+    private static final HashMap<UUID, UUID> tpahereMap = new HashMap<>();
+    private static final HashMap<UUID, Long> commandCooldownsMap = new HashMap<>();
+    private static final HashMap<UUID, Long> requestCooldownMap = new HashMap<>();
+    private static final HashMap<UUID, BukkitRunnable> timeoutTasksMap = new HashMap<>();
 
     @Override
     public void send(CommandSender sender, String msg, Object... args) {
         sender.sendMessage(LEGACY.deserialize(String.format(msg, args)));
     }
 
-    private boolean getCooldown(Player player, long cooldownSeconds, String command) {
+    private boolean getCommandCooldown(Player player, long cooldownSeconds, String command) {
         long currentTime = System.currentTimeMillis();
         long cooldownMillis = cooldownSeconds * 1000L;
         long lastUse = commandCooldownsMap.getOrDefault(player.getUniqueId(), 0L);
 
         if (currentTime - lastUse < cooldownMillis) {
             long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
-            send(player,"&cYou must wait &6%s &csecond(s) before using &6/%s &cagain.", remaining, command);
+            send(player, "&6You must wait &c%s second(s) &6before using &c/%s &6again.", remaining, command);
             return true;
         }
-        commandCooldownsMap.put(player.getUniqueId(),currentTime);
+        commandCooldownsMap.put(player.getUniqueId(), currentTime);
+        return false;
+    }
+
+    private boolean getRequestCooldown(Player player, long cooldownSeconds) {
+        long currentTime = System.currentTimeMillis();
+        long cooldownMillis = cooldownSeconds * 1000L;
+        long lastUse = requestCooldownMap.getOrDefault(player.getUniqueId(), 0L);
+
+        if (currentTime - lastUse < cooldownMillis) {
+            long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
+            send(player, "&6You must wait &c%s second(s) &6before sending another request &6again.", remaining);
+            return true;
+        }
+        requestCooldownMap.put(player.getUniqueId(), currentTime);
         return false;
     }
 
     public void handleReloadCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("brightstpa.reload")) {
-            send(sender,"&cYou do not have permission to use this command.");
+            send(sender, "&cYou do not have permission to use this command.");
             return;
         }
 
         if (args.length == 0 || !args[0].equalsIgnoreCase("reload")) {
-            send(sender,"&cUsage: /brightstpa reload");
             return;
         }
 
         try {
             plugin.reloadConfig();
             plugin.loadSettings();
-            send(sender,"&aConfiguration reloaded successfully!");
-        }
-        catch (Exception e) {
+            send(sender, "&6Configuration reloaded successfully!");
+        } catch (Exception e) {
             plugin.getLogger().severe("Failed to reload configuration: " + e.getMessage());
-            send(sender,"&cFailed to reload config! Check console for details.");
+            send(sender, "&cFailed to reload config! Check console for details.");
         }
     }
 
-    public void handleTpaDenyCommand(CommandSender sender) {
-        final Player requestPlayer = (Player) sender;
+    public void handleTpaDenyCommand(CommandSender sender, String[] args) {
+        Player requestPlayer = (Player) sender;
 
-        if (getCooldown(requestPlayer, plugin.getCommandCooldown(), "tpa")) {
-            return;
-        }
-        
-        if (!requestPlayer.hasPermission("brightstpa.deny")) {
-            send(requestPlayer,"&cYou do not have permission to use this command!");
-            return;
-        }
-
-        if (!tpaMap.containsValue(requestPlayer.getUniqueId())) {
-            send(requestPlayer,"&6You don't have any pending requests!");
-            return;
-        }
-
-        for (Map.Entry<UUID, UUID> entry : tpaMap.entrySet()) {
-            if (entry.getValue().equals(requestPlayer.getUniqueId())) {
-                tpaMap.remove(entry.getKey());
-
-                Player originalSender = Bukkit.getPlayer(entry.getKey());
-                if (originalSender != null) {
-                    send(originalSender,"&6Your TPA request was denied!");
-                }
-
-                send(requestPlayer,"&6Denied TPA request.");
-                break;
-            }
-        }
-    }
-
-    public void handleTpaAcceptCommand(CommandSender sender) {
-        final Player requestPlayer = (Player) sender;
-
-        if (getCooldown(requestPlayer, plugin.getCommandCooldown(), "tpaccept")) {
-            return;
-        }
-
-        if (!requestPlayer.hasPermission("brightstpa.accept")) {
+        if (getCommandCooldown(requestPlayer, plugin.getCommandCooldown(), "tpdeny") ||
+                !requestPlayer.hasPermission("brightstpa.deny")) {
             send(requestPlayer, "&cYou do not have permission to use this command!");
             return;
         }
 
-        UUID receivePlayerUUID1 = tpaMap.entrySet().stream().filter(entry -> entry.getValue().equals(requestPlayer.getUniqueId())).findFirst().map(Map.Entry::getKey).orElse(null);
-        UUID receivePlayerUUID2 = tpahereMap.entrySet().stream().filter(entry -> entry.getValue().equals(requestPlayer.getUniqueId())).findFirst().map(Map.Entry::getKey).orElse(null);
-
-        if (receivePlayerUUID1 == null && receivePlayerUUID2 == null) {
-            send(requestPlayer, "&6You don't have any pending requests!");
-        } else if (receivePlayerUUID1 != null) {
-            Player receivePlayer1 = Bukkit.getPlayer(receivePlayerUUID1);
-
-            if (receivePlayer1 == null || !receivePlayer1.isOnline()) {
-                tpaMap.remove(receivePlayerUUID1);
-                send(requestPlayer, "&cThe player %s is no longer online.", receivePlayer1);
-            }
-
-            final int delaySeconds = plugin.getTpDelay();
-            final long delayTicks = delaySeconds * 20L;
-
-            assert receivePlayer1 != null;
-            send(requestPlayer, "&6TPA request accepted! &a%s will teleport to you in &c%s seconds.", receivePlayer1.getName(), delaySeconds);
-            send(receivePlayer1, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-
-                    if (receivePlayer1.isOnline() && requestPlayer.isOnline()) {
-                        receivePlayer1.teleport(requestPlayer.getLocation());
-                        tpaMap.remove(receivePlayerUUID1);
-                        send(receivePlayer1, "&aTeleported successfully!");
-                        send(requestPlayer, "&a%s has arrived.", receivePlayer1.getName());
-                    } else {
-                        send(receivePlayer1, "&cTeleport cancelled: player went offline.");
-                    }
-                }
-            }.runTaskLater(plugin, delayTicks);
+        if (args.length == 0) {
+            denyAllRequests(requestPlayer);
         } else {
-            Player receivePlayer2 = Bukkit.getPlayer(receivePlayerUUID2);
-
-            if (receivePlayer2 == null || !receivePlayer2.isOnline()) {
-                tpahereMap.remove(receivePlayerUUID2);
-                send(requestPlayer, "&cThe player %s is no longer online.", receivePlayer2);
-            }
-
-            final int delaySeconds = plugin.getTpDelay();
-            final long delayTicks = delaySeconds * 20L;
-
-            assert receivePlayer2 != null;
-            send(receivePlayer2, "&6TPA request accepted! &a%s will teleport to you in &c%s seconds.", requestPlayer.getName(), delaySeconds);
-            send(requestPlayer, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-
-                    if (receivePlayer2.isOnline() && requestPlayer.isOnline()) {
-                        requestPlayer.teleport(receivePlayer2.getLocation());
-                        tpahereMap.remove(receivePlayerUUID2);
-                        send(requestPlayer, "&aTeleported successfully!");
-                        send(receivePlayer2, "&a%s has arrived.", requestPlayer.getName());
-                    } else {
-                        send(requestPlayer, "&cTeleport cancelled: player went offline.");
-                    }
-                }
-            }.runTaskLater(plugin, delayTicks);
+            denySpecificRequest(requestPlayer, args[0]);
         }
+    }
+
+    private void denyAllRequests(Player requestPlayer) {
+        if (!tpaMap.containsValue(requestPlayer.getUniqueId()) &&
+                !tpahereMap.containsValue(requestPlayer.getUniqueId())) {
+            send(requestPlayer, "&6You don't have any pending requests!");
+            return;
+        }
+
+        denyRequestsFromMap(tpaMap, requestPlayer, "TPA");
+        denyRequestsFromMap(tpahereMap, requestPlayer, "TPAHERE");
+        send(requestPlayer, "&6Denied all requests.");
+    }
+
+    private void denyRequestsFromMap(Map<UUID, UUID> map, Player requestPlayer, String type) {
+        List<UUID> toRemove = new ArrayList<>();
+        for (Map.Entry<UUID, UUID> entry : map.entrySet()) {
+            if (entry.getValue().equals(requestPlayer.getUniqueId())) {
+                toRemove.add(entry.getKey());
+            }
+        }
+
+        for (UUID senderUUID : toRemove) {
+            cancelTimeout(senderUUID);
+            map.remove(senderUUID);
+            Player sender = Bukkit.getPlayer(senderUUID);
+            if (sender != null) {
+                send(sender, "&6Your %s request was denied!", type);
+            }
+        }
+    }
+
+    private void denySpecificRequest(Player requestPlayer, String playerName) {
+        Player receivePlayer = Bukkit.getPlayer(playerName);
+        if (receivePlayer == null) {
+            send(requestPlayer, "&cPlayer not found!");
+            return;
+        }
+
+        if (receivePlayer.getUniqueId().equals(requestPlayer.getUniqueId())) {
+            send(requestPlayer, "&6You may not deny yourself!");
+            return;
+        }
+
+        cancelTimeout(receivePlayer.getUniqueId());
+        boolean foundRequest = removeRequest(tpaMap, receivePlayer, requestPlayer, "TPA");
+        foundRequest |= removeRequest(tpahereMap, receivePlayer, requestPlayer, "TPAHERE");
+
+        if (!foundRequest) {
+            send(requestPlayer, "&6You don't have any pending requests from &c%s!", receivePlayer.getName());
+        }
+    }
+
+    private boolean removeRequest(Map<UUID, UUID> map, Player sender, Player receiver, String type) {
+        if (map.containsKey(sender.getUniqueId()) &&
+                map.get(sender.getUniqueId()).equals(receiver.getUniqueId())) {
+            map.remove(sender.getUniqueId());
+            send(sender, "&6Your %s request was denied!", type);
+            send(receiver, "&6Denied &c%s&6's %s request.", sender.getName(), type);
+            return true;
+        }
+        return false;
+    }
+
+    public void handleTpaAcceptCommand(CommandSender sender, String[] args) {
+        Player requestPlayer = (Player) sender;
+
+        if (getCommandCooldown(requestPlayer, plugin.getCommandCooldown(), "tpaccept") ||
+                !requestPlayer.hasPermission("brightstpa.accept")) {
+            send(requestPlayer, "&cYou do not have permission to use this command!");
+            return;
+        }
+
+        if (args.length == 0) {
+            acceptAnyRequest(requestPlayer);
+        } else {
+            acceptSpecificRequest(requestPlayer, args[0]);
+        }
+    }
+
+    private void acceptAnyRequest(Player requestPlayer) {
+        UUID senderUUID = findRequestSender(tpaMap, requestPlayer);
+        if (senderUUID != null) {
+            cancelTimeout(senderUUID);
+            tpExecute(senderUUID, requestPlayer, "tpa");
+            return;
+        }
+
+        senderUUID = findRequestSender(tpahereMap, requestPlayer);
+        if (senderUUID != null) {
+            cancelTimeout(senderUUID);
+            tpExecute(senderUUID, requestPlayer, "tpahere");
+            return;
+        }
+
+        send(requestPlayer, "&6You don't have any pending requests!");
+    }
+
+    private void acceptSpecificRequest(Player requestPlayer, String playerName) {
+        Player receivePlayer = Bukkit.getPlayer(playerName);
+        if (receivePlayer == null) {
+            send(requestPlayer, "&cPlayer not found!");
+            return;
+        }
+
+        if (receivePlayer.getUniqueId().equals(requestPlayer.getUniqueId())) {
+            send(requestPlayer, "&6You may not accept yourself!");
+            return;
+        }
+
+        cancelTimeout(receivePlayer.getUniqueId());
+        UUID senderUUID = receivePlayer.getUniqueId();
+
+        if (tpaMap.containsKey(senderUUID) && tpaMap.get(senderUUID).equals(requestPlayer.getUniqueId())) {
+            tpExecute(senderUUID, requestPlayer, "tpa");
+        } else if (tpahereMap.containsKey(senderUUID) && tpahereMap.get(senderUUID).equals(requestPlayer.getUniqueId())) {
+            tpExecute(senderUUID, requestPlayer, "tpahere");
+        } else {
+            send(requestPlayer, "&6You don't have any pending requests from &c%s!", receivePlayer.getName());
+        }
+    }
+
+    private UUID findRequestSender(Map<UUID, UUID> map, Player receiver) {
+        return map.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(receiver.getUniqueId()))
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 
     public void handleTpaCommand(CommandSender sender, String[] args) {
-        final Player requestPlayer = (Player) sender;
-        final Player receivePlayer = Bukkit.getPlayer(args[0]);
+        if (args.length == 0) return;
 
-        if (getCooldown(requestPlayer, plugin.getCommandCooldown(), "tpa")) {
-            return;
-        }
-        
-        if (!requestPlayer.hasPermission("brightstpa.tpa")) {
-            send(requestPlayer,"&cYou do not have permission to use this command!");
-            return;
-        }
-
-        if (args.length != 1) {
-            send(requestPlayer,"&cInvalid syntax!");
-            return;
-        }
-        
-        if (receivePlayer == null) {
-            send(requestPlayer,"&cPlayer is not online!");
-            return;
-        }
-
-        if (receivePlayer.getUniqueId().equals(requestPlayer.getUniqueId())) {
-            send(requestPlayer,"&cYou may not teleport to yourself!");
-            return;
-        }
-
-        if (tpaMap.containsKey(requestPlayer.getUniqueId())) {
-            send(requestPlayer,"&6You already have a pending request!");
-            return;
-        }
-
-        final int timeoutSecond = plugin.getRequestTimeout();
-        final long timeoutTicks = timeoutSecond * 20L;
-
-        tpaMap.put(requestPlayer.getUniqueId(), receivePlayer.getUniqueId());
-
-        send(requestPlayer,"&6Sent TPA request to &c%s",receivePlayer.getName());
-        send(receivePlayer,"""
-            &c%s &6wants to teleport to you.
-            &6Type &c/tpaccept &6to accept.
-            &6Type &c/tpdeny &6to deny.
-            &6You have %s second(s) to respond.
-            """,requestPlayer.getName(),timeoutSecond);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                UUID receivePlayerUUID = tpaMap.remove(requestPlayer.getUniqueId());
-
-                if (receivePlayerUUID != null) {
-                    Player receivePlayer = Bukkit.getPlayer(receivePlayerUUID);
-
-                    String receivePlayerName = (receivePlayer != null && receivePlayer.isOnline()) ? receivePlayer.getName() : "a player";
-                    send(requestPlayer, "&cYour TPA request to %s has timed out.", receivePlayerName);
-
-                    if (receivePlayer != null && receivePlayer.isOnline()) {
-                        send(receivePlayer, "&c%s's TPA request has timed out.", requestPlayer.getName());
-                    }
-                }
-            }
-        }.runTaskLater(plugin, timeoutTicks);
+        sendTeleportRequest(sender, args[0], tpaMap, "TPA", "wants tp to you");
     }
 
     public void handleTpahereCommand(CommandSender sender, String[] args) {
-        final Player requestPlayer = (Player) sender;
-        final Player receivePlayer = Bukkit.getPlayer(args[0]);
+        if (args.length == 0) return;
+        sendTeleportRequest(sender, args[0], tpahereMap, "TPAHERE", "wants you tp to them");
+    }
 
-        if (getCooldown(requestPlayer, plugin.getCommandCooldown(), "tpahere")) {
+    private void sendTeleportRequest(CommandSender sender, String targetName, Map<UUID, UUID> map, String type, String message) {
+        Player requestPlayer = (Player) sender;
+
+        if (getCommandCooldown(requestPlayer, plugin.getCommandCooldown(), type.toLowerCase()) ||
+            getRequestCooldown(requestPlayer, plugin.getRequestCooldown())) {
             return;
         }
 
-        if (!requestPlayer.hasPermission("brightstpa.tpahere")) {
-            send(requestPlayer,"&cYou do not have permission to use this command!");
-            return;
+        if (type.equals("TPA")) {
+            if (!requestPlayer.hasPermission("brightstpa.tpa")) {
+                send(requestPlayer, "&cYou do not have permission to use this command!");
+                return;
+            }
+        }
+        else if (type.equals("TPAHERE")) {
+            if (!requestPlayer.hasPermission("brightstpa.tpahere")) {
+                send(requestPlayer, "&cYou do not have permission to use this command!");
+                return;
+            }
         }
 
-        if (args.length != 1) {
-            send(requestPlayer,"&cInvalid syntax!");
-            return;
-        }
-
+        Player receivePlayer = Bukkit.getPlayer(targetName);
         if (receivePlayer == null) {
-            send(requestPlayer,"&cPlayer is not online!");
+            send(requestPlayer, "&cPlayer is not online!");
             return;
         }
 
         if (receivePlayer.getUniqueId().equals(requestPlayer.getUniqueId())) {
-            send(requestPlayer,"&cYou may not teleport to yourself!");
+            send(requestPlayer, "&6You may not teleport to yourself!");
             return;
         }
 
-        if (tpaMap.containsKey(requestPlayer.getUniqueId())) {
-            send(requestPlayer,"&6You already have a pending request!");
+        if (map.containsKey(requestPlayer.getUniqueId())) {
+            send(requestPlayer, "&6You already have a pending request!");
             return;
         }
 
-        final int timeoutSecond = plugin.getRequestTimeout();
-        final long timeoutTicks = timeoutSecond * 20L;
+        int timeoutSecond = plugin.getRequestTimeout();
+        map.put(requestPlayer.getUniqueId(), receivePlayer.getUniqueId());
 
-        tpahereMap.put(requestPlayer.getUniqueId(), receivePlayer.getUniqueId());
+        send(requestPlayer, "&6Sent %s request to &c%s", type, receivePlayer.getName());
+        send(receivePlayer, """
+                        &c%s &6%s.
+                        &6Type &c/tpaccept &6to accept.
+                        &6Type &c/tpdeny &6to deny.
+                        &6You have &c%s second(s) &6to respond.
+                        """,
+                requestPlayer.getName(), message, timeoutSecond);
 
-        send(requestPlayer,"&6Sent TPAHERE request to &c%s", receivePlayer.getName());
-        send(receivePlayer,"""
-            &c%s &6wants you to teleport to them.
-            &6Type &c/tpaccept &6to accept
-            &6Type &c/tpdeny &6to deny.
-            &6You have %s second(s) to respond.
-            """,requestPlayer.getName(),timeoutSecond);
+        scheduleTimeout(requestPlayer, map, type, timeoutSecond * 20L);
+    }
+
+    private void scheduleTimeout(Player requestPlayer, Map<UUID, UUID> map, String type, long ticks) {
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                UUID receiverUUID = map.remove(requestPlayer.getUniqueId());
+                if (receiverUUID != null) {
+                    Player receiver = Bukkit.getPlayer(receiverUUID);
+                    String receiverName = (receiver != null && receiver.isOnline()) ? receiver.getName() : "a player";
+                    send(requestPlayer, "&6Your %s request to &c%s &6has timed out.", type, receiverName);
+                    if (receiver != null && receiver.isOnline()) {
+                        send(receiver, "&c%s&6's %s request has timed out.", requestPlayer.getName(), type);
+                    }
+                }
+                timeoutTasksMap.remove(requestPlayer.getUniqueId());
+            }
+        };
+        task.runTaskLater(plugin, ticks);
+        timeoutTasksMap.put(requestPlayer.getUniqueId(), task);
+    }
+
+    private void cancelTimeout(UUID playerUUID) {
+        BukkitRunnable task = timeoutTasksMap.remove(playerUUID);
+        if (task != null) {
+            task.cancel();
+        }
+    }
+
+    private void tpExecute(UUID senderUUID, Player receiver, String type) {
+        Player sender = Bukkit.getPlayer(senderUUID);
+
+        if (sender == null || !sender.isOnline()) {
+            tpaMap.remove(senderUUID);
+            tpahereMap.remove(senderUUID);
+            send(receiver, "&cThe player is no longer online.");
+            return;
+        }
+
+        int delaySeconds = plugin.getTpDelay();
+        boolean isTpa = type.equals("tpa");
+
+        if (isTpa) {
+            send(receiver, "&6TPA request accepted! &c%s &6will teleport to you in &c%s seconds.", sender.getName(), delaySeconds);
+            send(sender, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
+        } else {
+            send(sender, "&6TPAHERE request accepted! &c%s &6will teleport to you in &c%s seconds.", receiver.getName(), delaySeconds);
+            send(receiver, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
+        }
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                UUID receivePlayerUUID = tpahereMap.remove(requestPlayer.getUniqueId());
+                if (!sender.isOnline() || !receiver.isOnline()) {
+                    send(isTpa ? sender : receiver, "&cTeleport cancelled: player went offline.");
+                    return;
+                }
 
-                if (receivePlayerUUID != null) {
-                    Player receivePlayer = Bukkit.getPlayer(receivePlayerUUID);
-
-                    String receivePlayerName = (receivePlayer != null && receivePlayer.isOnline()) ? receivePlayer.getName() : "a player";
-                    send(requestPlayer, "&cYour TPA request to %s has timed out.", receivePlayerName);
-
-                    if (receivePlayer != null && receivePlayer.isOnline()) {
-                        send(receivePlayer, "&c%s's TPA request has timed out.", requestPlayer.getName());
-                    }
+                if (isTpa) {
+                    sender.teleport(receiver.getLocation());
+                    tpaMap.remove(senderUUID);
+                    send(sender, "&6Teleported successfully!");
+                    send(receiver, "&6%s has arrived.", sender.getName());
+                } else {
+                    receiver.teleport(sender.getLocation());
+                    tpahereMap.remove(senderUUID);
+                    send(receiver, "&6Teleported successfully!");
+                    send(sender, "&6%s has arrived.", receiver.getName());
                 }
             }
-        }.runTaskLater(plugin, timeoutTicks);
+        }.runTaskLater(plugin, delaySeconds * 20L);
     }
 }

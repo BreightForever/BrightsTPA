@@ -43,7 +43,7 @@ public record CommandHandler(HandleExecutor plugin) implements CommandExecutor, 
                     send(sender, "&cOnly players may use this command!");
                     return true;
                 }
-                plugin.handleTpaAcceptCommand(sender);
+                plugin.handleTpaAcceptCommand(sender, args);
                 return true;
             }
 
@@ -52,7 +52,7 @@ public record CommandHandler(HandleExecutor plugin) implements CommandExecutor, 
                     send(sender, "&cOnly players may use this command!");
                     return true;
                 }
-                plugin.handleTpaDenyCommand(sender);
+                plugin.handleTpaDenyCommand(sender, args);
                 return true;
             }
 
