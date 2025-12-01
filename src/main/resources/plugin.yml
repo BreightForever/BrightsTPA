@@ -22,8 +22,14 @@ commands:
     description: Cancel all requests
 
 permissions:
+  brightstpa.bypass.tpdelay:
+    default: op
+  brightstpa.bypass.cooldown.command:
+    default: op
+  brightstpa.bypass.cooldown.request:
+    default: op
   brightstpa.reload:
-    description: "Allows the use of the /brightstpa reload command"
+    default: op
   brightstpa.tpdeny:
     default: true
   brightstpa.tpaccept:

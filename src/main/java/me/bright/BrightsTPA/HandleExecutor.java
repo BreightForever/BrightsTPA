@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -19,35 +20,41 @@ public record HandleExecutor(BrightsTPA plugin) {
     public static final HashMap<UUID, BukkitRunnable> timeoutTasksMap = new HashMap<>();
     public static final HashMap<UUID, BukkitRunnable> teleportTasksMap = new HashMap<>();
 
-    public boolean getCommandCooldown(Player player, long cooldownSeconds, String command) {
+    public boolean getCommandCooldown(@NotNull Player player, long cooldownSeconds, String command) {
         long currentTime = System.currentTimeMillis();
         long cooldownMillis = cooldownSeconds * 1000L;
         long lastUse = commandCooldownsMap.getOrDefault(player.getUniqueId(), 0L);
 
-        if (currentTime - lastUse < cooldownMillis) {
-            long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
-            send(player, "&6You must wait &c%s second(s) &6before using &c/%s &6again.", remaining, command);
-            return true;
+        if (!player.hasPermission("brightstpa.bypass.cooldown.command")) {
+            if (currentTime - lastUse < cooldownMillis) {
+                long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
+                send(player, "&6You must wait &c%s second(s) &6before using &c/%s &6again.", remaining, command);
+                return true;
+            }
+            commandCooldownsMap.put(player.getUniqueId(), currentTime);
+            return false;
         }
-        commandCooldownsMap.put(player.getUniqueId(), currentTime);
         return false;
     }
 
-    public boolean getRequestCooldown(Player player, long cooldownSeconds) {
+    public boolean getRequestCooldown(@NotNull Player player, long cooldownSeconds) {
         long currentTime = System.currentTimeMillis();
         long cooldownMillis = cooldownSeconds * 1000L;
         long lastUse = requestCooldownMap.getOrDefault(player.getUniqueId(), 0L);
 
-        if (currentTime - lastUse < cooldownMillis) {
-            long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
-            send(player, "&6You must wait &c%s second(s) &6before sending another request &6again.", remaining);
-            return true;
+        if (!player.hasPermission("brightstpa.bypass.cooldown.request")) {
+            if (currentTime - lastUse < cooldownMillis) {
+                long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
+                send(player, "&6You must wait &c%s second(s) &6before sending another request &6again.", remaining);
+                return true;
+            }
+            requestCooldownMap.put(player.getUniqueId(), currentTime);
+            return false;
         }
-        requestCooldownMap.put(player.getUniqueId(), currentTime);
         return false;
     }
 
-    public void handleReloadCommand(CommandSender sender, String[] args) {
+    public void handleReloadCommand(@NotNull CommandSender sender, String[] args) {
         if (!sender.hasPermission("brightstpa.reload")) {
             send(sender, "&cYou do not have permission to use this command.");
             return;
@@ -84,7 +91,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
     }
 
-    public void denyAllRequests(Player requestPlayer) {
+    public void denyAllRequests(@NotNull Player requestPlayer) {
         if (!tpaMap.containsValue(requestPlayer.getUniqueId()) &&
                 !tpahereMap.containsValue(requestPlayer.getUniqueId())) {
             send(requestPlayer, "&6You don't have any pending requests!");
@@ -95,7 +102,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         send(requestPlayer, "&6Denied all requests.");
     }
 
-    public void denyRequestsFromMap(Map<UUID, UUID> map, Player requestPlayer, String type) {
+    public void denyRequestsFromMap(@NotNull Map<UUID, UUID> map, Player requestPlayer, String type) {
         List<UUID> toRemove = new ArrayList<>();
         for (Map.Entry<UUID, UUID> entry : map.entrySet()) {
             if (entry.getValue().equals(requestPlayer.getUniqueId())) {
@@ -129,7 +136,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
     }
 
-    public boolean removeRequest(Map<UUID, UUID> map, Player requestPlayer, Player receivePlayer, String type) {
+    public boolean removeRequest(@NotNull Map<UUID, UUID> map, @NotNull Player requestPlayer, Player receivePlayer, String type) {
         if (map.containsKey(requestPlayer.getUniqueId()) && map.get(requestPlayer.getUniqueId()).equals(receivePlayer.getUniqueId())) {
             map.remove(requestPlayer.getUniqueId());
             send(requestPlayer, "&6Your %s request to &6%s &cwas denied!", type, receivePlayer);
@@ -156,7 +163,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
     }
 
-    public void acceptAnyRequest(Player requestPlayer) {
+    public void acceptAnyRequest(@NotNull Player requestPlayer) {
         if (teleportTasksMap.containsKey(requestPlayer.getUniqueId())) {
             send(requestPlayer, "&6You cannot accept requests while teleporting!");
             return;
@@ -180,7 +187,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         send(requestPlayer, "&6You don't have any pending requests!");
     }
 
-    public void acceptSpecificRequest(Player requestPlayer, String playerName) {
+    public void acceptSpecificRequest(@NotNull Player requestPlayer, String playerName) {
         if (teleportTasksMap.containsKey(requestPlayer.getUniqueId())) {
             send(requestPlayer, "&6You cannot accept requests while teleporting!");
             return;
@@ -212,7 +219,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
     }
 
-    public UUID findRequestSender(Map<UUID, UUID> map, Player receiver) {
+    public UUID findRequestSender(@NotNull Map<UUID, UUID> map, Player receiver) {
         return map.entrySet().stream()
             .filter(entry -> entry.getValue().equals(receiver.getUniqueId()))
             .findFirst()
@@ -220,17 +227,17 @@ public record HandleExecutor(BrightsTPA plugin) {
             .orElse(null);
     }
 
-    public void handleTpaCommand(CommandSender sender, String[] args) {
+    public void handleTpaCommand(CommandSender sender, String @NotNull [] args) {
         if (args.length == 0) return;
         sendTeleportRequest(sender, args[0], tpaMap, "TPA", "wants tp to you");
     }
 
-    public void handleTpahereCommand(CommandSender sender, String[] args) {
+    public void handleTpahereCommand(CommandSender sender, String @NotNull [] args) {
         if (args.length == 0) return;
         sendTeleportRequest(sender, args[0], tpahereMap, "TPAHERE", "wants you tp to them");
     }
 
-    public void sendTeleportRequest(CommandSender sender, String name, Map<UUID, UUID> map, String type, String message) {
+    public void sendTeleportRequest(CommandSender sender, String name, Map<UUID, UUID> map, @NotNull String type, String message) {
         Player requestPlayer = (Player) sender;
         if (type.equals("TPA")) {
             if (!requestPlayer.hasPermission("brightstpa.tpa")) {
@@ -282,7 +289,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         scheduleTimeout(requestPlayer, map, type, timeoutSecond * 20L);
     }
 
-    public void scheduleTimeout(Player requestPlayer, Map<UUID, UUID> map, String type, long ticks) {
+    public void scheduleTimeout(@NotNull Player requestPlayer, Map<UUID, UUID> map, String type, long ticks) {
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
@@ -334,7 +341,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         cancelTpaRequest(requestPlayer);
     }
 
-    public void cancelTpaRequest(Player requestPlayer) {
+    public void cancelTpaRequest(@NotNull Player requestPlayer) {
         UUID receiverUUID = tpaMap.remove(requestPlayer.getUniqueId());
         String type = "TPA";
 
@@ -364,12 +371,16 @@ public record HandleExecutor(BrightsTPA plugin) {
             return;
         }
         if (type.equals("tpa")) {
-            send(receivePlayer, "&6TPA request accepted! &c%s &6will teleport to you in &c%s seconds.", requestPlayer.getName(), delaySeconds);
-            send(requestPlayer, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
+            if (!requestPlayer.hasPermission("brightstpa.bypass.tpdelay")) {
+                send(receivePlayer, "&6TPA request accepted! &c%s &6will teleport to you in &c%s seconds.", requestPlayer.getName(), delaySeconds);
+                send(requestPlayer, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
+            }
         }
         else if (type.equals("tpahere")) {
-            send(requestPlayer, "&6TPAHERE request accepted! &c%s &6will teleport to you in &c%s seconds.", receivePlayer.getName(), delaySeconds);
-            send(receivePlayer, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
+            if (!requestPlayer.hasPermission("brightstpa.bypass.tpdelay")) {
+                send(requestPlayer, "&6TPAHERE request accepted! &c%s &6will teleport to you in &c%s seconds.", receivePlayer.getName(), delaySeconds);
+                send(receivePlayer, "&6Request accepted! Teleporting in &c%s seconds.", delaySeconds);
+                }
         }
         BukkitRunnable task = new BukkitRunnable() {
             final boolean isCancelOnMove = BrightsTPA.getCancelOnMove();
@@ -378,7 +389,12 @@ public record HandleExecutor(BrightsTPA plugin) {
 
             @Override
             public void run() {
-                elapsed += 1;
+                if (!requestPlayer.hasPermission("brightstpa.bypass.tpdelay")) {
+                    elapsed += 1;
+                }
+                else {
+                    elapsed += delaySeconds * 20;
+                }
                 org.bukkit.Location currentLocation = type.equals("tpa") ? requestPlayer.getLocation() : receivePlayer.getLocation();
                 Player player = type.equals("tpa") ? requestPlayer : receivePlayer;
                 if (elapsed >= delaySeconds * 20) {
