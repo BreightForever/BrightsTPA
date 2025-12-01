@@ -275,7 +275,11 @@ public record HandleExecutor(BrightsTPA plugin) implements me.bright.BrightsTPA.
         int timeoutSecond = plugin.getRequestTimeout();
         map.put(requestPlayer.getUniqueId(), receivePlayer.getUniqueId());
 
-        send(requestPlayer, "&6Sent %s request to &c%s", type, receivePlayer.getName());
+        send(requestPlayer, """
+                        &6Sent %s request to &c%s.
+                        &6Type &c/tpacancel &6to cancel.
+                        """,
+                type, receivePlayer.getName());
         send(receivePlayer, """
                         &c%s &6%s.
                         &6Type &c/tpaccept &6to accept.
