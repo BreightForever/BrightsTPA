@@ -7,9 +7,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-import static me.bright.BrightsTPA.Format.stringFormating.send;
+import static me.bright.BrightsTPA.Format.StringFormatting.send;
 
-public record handleExecutor(BrightsTPA plugin) {
+public record HandleExecutor(BrightsTPA plugin) {
 
     public static final HashMap<UUID, Map<UUID, Long>> tpaMap = new HashMap<>();
     public static final HashMap<UUID, Map<UUID, Long>> tpahereMap = new HashMap<>();

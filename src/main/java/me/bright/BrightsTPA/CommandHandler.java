@@ -5,13 +5,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
-import static me.bright.BrightsTPA.Format.stringFormating.send;
+import static me.bright.BrightsTPA.Format.StringFormatting.send;
 
-public record commandHandler(handleExecutor plugin) implements CommandExecutor {
+public record CommandHandler(HandleExecutor plugin) implements CommandExecutor {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NonNull Command command, @NotNull String label, String @NonNull [] args) {
 
         switch (command.getName().toLowerCase()) {
 

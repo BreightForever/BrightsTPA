@@ -1,6 +1,6 @@
 package me.bright.BrightsTPA;
 
-import me.bright.BrightsTPA.Format.tabComplete;
+import me.bright.BrightsTPA.Format.TabComplete;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,10 +20,10 @@ public class BrightsTPA extends JavaPlugin {
         loadSettings();
         loadLanguage();
 
-        getServer().getPluginManager().registerEvents(new tabComplete(), this);
+        getServer().getPluginManager().registerEvents(new TabComplete(), this);
 
-        handleExecutor logicHandler = new handleExecutor(this);
-        commandHandler handler = new commandHandler(logicHandler);
+        HandleExecutor logicHandler = new HandleExecutor(this);
+        CommandHandler handler = new CommandHandler(logicHandler);
 
         Objects.requireNonNull(getCommand("tpa")).setExecutor(handler);
         Objects.requireNonNull(getCommand("tpahere")).setExecutor(handler);

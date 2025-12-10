@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import static me.bright.BrightsTPA.BrightsTPA.LEGACY;
 
-public class stringFormating {
+public class StringFormatting {
     public static void send(CommandSender sender, java.lang.String msg, Object... args) {
 
         msg = java.lang.String.format(msg, args);

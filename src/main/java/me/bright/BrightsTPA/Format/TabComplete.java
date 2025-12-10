@@ -7,7 +7,7 @@ import org.bukkit.event.server.TabCompleteEvent;
 import java.lang.String;
 import java.util.List;
 
-public class tabComplete implements Listener {
+public class TabComplete implements Listener {
 
     @EventHandler
     public void onTabComplete(TabCompleteEvent event) {
