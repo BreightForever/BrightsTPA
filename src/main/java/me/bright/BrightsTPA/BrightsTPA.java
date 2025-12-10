@@ -22,8 +22,8 @@ public class BrightsTPA extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new tabComplete(), this);
 
-        HandleExecutor logicHandler = new HandleExecutor(this);
-        CommandHandler handler = new CommandHandler(logicHandler);
+        handleExecutor logicHandler = new handleExecutor(this);
+        commandHandler handler = new commandHandler(logicHandler);
 
         Objects.requireNonNull(getCommand("tpa")).setExecutor(handler);
         Objects.requireNonNull(getCommand("tpahere")).setExecutor(handler);

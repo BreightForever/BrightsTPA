@@ -6,9 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static me.bright.BrightsTPA.Format.String.send;
+import static me.bright.BrightsTPA.Format.stringFormating.send;
 
-public record CommandHandler(HandleExecutor plugin) implements CommandExecutor {
+public record commandHandler(handleExecutor plugin) implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String [] args) {
