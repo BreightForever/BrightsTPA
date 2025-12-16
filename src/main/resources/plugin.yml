@@ -10,24 +10,18 @@ softdepend: [PlaceholderAPI]
 commands:
   brightstpa:
     description: Reload the config or check version
-    permission: brightstpa.admin
   tpa:
     description: TPA to a player
-    permission: brightstpa.tpa
   tpahere:
     description: TPA a player to you
-    permission: brightstpa.tpahere
   tpaccept:
     description: Accept a TPA request
     aliases: [tpyes]
-    permission: brightstpa.tpaccept
   tpdeny:
     description: Deny a TPA request
     aliases: [tpno]
-    permission: brightstpa.tpdeny
   tpacancel:
     description: Cancel all requests
-    permission: brightstpa.tpacancel
 
 permissions:
   brightstpa.bypass.tpdelay:
