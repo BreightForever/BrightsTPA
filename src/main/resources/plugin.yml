@@ -1,0 +1,62 @@
+main: ${group}.${name}.${name}
+api-version: ${apiVersion}
+
+name: ${name}
+version: ${version}
+author: ${author}
+
+softdepend: [PlaceholderAPI]
+
+commands:
+  brightstpa:
+    description: Reload the config or check version
+    permission: brightstpa.admin
+  tpa:
+    description: TPA to a player
+    permission: brightstpa.tpa
+  tpahere:
+    description: TPA a player to you
+    permission: brightstpa.tpahere
+  tpaccept:
+    description: Accept a TPA request
+    aliases: [tpyes]
+    permission: brightstpa.tpaccept
+  tpdeny:
+    description: Deny a TPA request
+    aliases: [tpno]
+    permission: brightstpa.tpdeny
+  tpacancel:
+    description: Cancel all requests
+    permission: brightstpa.tpacancel
+
+permissions:
+  brightstpa.bypass.tpdelay:
+    default: op
+  brightstpa.bypass.cooldown.command:
+    default: op
+  brightstpa.bypass.cooldown.request:
+    default: op
+  brightstpa.admin:
+    default: op
+  brightstpa.tpdeny:
+    default: true
+  brightstpa.tpaccept:
+    default: true
+  brightstpa.tpa:
+    default: true
+  brightstpa.tpahere:
+    default: true
+  brightstpa.tpacancel:
+    default: true
+  brightstpa.*:
+    default: false
+    children:
+      brightstpa.bypass.tpdelay: true
+      brightstpa.bypass.cooldown.command: true
+      brightstpa.bypass.cooldown.request: true
+      brightstpa.admin: true
+      brightstpa.tpdeny: true
+      brightstpa.tpaccept: true
+      brightstpa.tpa: true
+      brightstpa.tpahere: true
+      brightstpa.tpacancel: true
