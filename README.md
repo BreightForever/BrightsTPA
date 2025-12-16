@@ -1,1 +1,1 @@
-A simple tpa plugin, nothing much here
+A simple tpa minecraft plugin, nothing much here
