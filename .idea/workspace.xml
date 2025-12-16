@@ -7,7 +7,6 @@
     <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Initial commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/lang.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +151,7 @@
       <recent name="me.bright.BrightsTPA" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.prj1 [:runServer]">
+  <component name="RunManager" selected="Gradle.prj1 [build]">
     <configuration name="prj1 [:runServer]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -230,7 +229,10 @@
       <workItem from="1764958799448" duration="108000" />
       <workItem from="1764959310785" duration="434000" />
       <workItem from="1765342153471" duration="225000" />
-      <workItem from="1765882373362" duration="6639000" />
+      <workItem from="1765882373362" duration="6753000" />
+      <workItem from="1765891628488" duration="195000" />
+      <workItem from="1765894355137" duration="227000" />
+      <workItem from="1765900104883" duration="482000" />
     </task>
     <task id="LOCAL-00001" summary="nothing">
       <option name="closed" value="true" />
@@ -352,7 +354,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765884666442</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1765889098793</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1765889098793</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

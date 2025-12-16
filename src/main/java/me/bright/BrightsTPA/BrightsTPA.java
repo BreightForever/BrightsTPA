@@ -51,11 +51,7 @@ public class BrightsTPA extends JavaPlugin {
 
     public FileConfiguration langConfig;
     public void reloadLang() {
-        File langFile = new File(getDataFolder(), "lang.yml");
-        if (!langFile.exists()) {
-            saveResource("lang.yml", false);
-        }
-        langConfig = YamlConfiguration.loadConfiguration(langFile);
+        langConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "lang.yml"));
     }
     public String msg(String path, Map<String, String> replacements) {
         String text = langConfig.isList(path) ? String.join("\n", langConfig.getStringList(path)) : langConfig.getString(path, "Unknown message");
