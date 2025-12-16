@@ -2,6 +2,7 @@ package me.bright.BrightsTPA;
 
 import me.bright.BrightsTPA.Format.TabComplete;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,8 +21,6 @@ public class BrightsTPA extends JavaPlugin {
         loadSettings();
         loadLanguage();
 
-        getServer().getPluginManager().registerEvents(new TabComplete(), this);
-
         HandleExecutor logicHandler = new HandleExecutor(this);
         CommandHandler handler = new CommandHandler(logicHandler);
 
@@ -32,7 +31,10 @@ public class BrightsTPA extends JavaPlugin {
         Objects.requireNonNull(getCommand("tpyes")).setExecutor(handler);
         Objects.requireNonNull(getCommand("tpno")).setExecutor(handler);
         Objects.requireNonNull(getCommand("tpacancel")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("brightstpa")).setExecutor(handler);
+
+        PluginCommand cmd = Objects.requireNonNull(getCommand("brightstpa"));
+        cmd.setExecutor(handler);
+        cmd.setTabCompleter(new TabComplete());
     }
 
     public static int requestTimeout;

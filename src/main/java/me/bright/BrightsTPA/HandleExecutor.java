@@ -158,21 +158,12 @@ public record HandleExecutor(BrightsTPA plugin) {
 
     public void handleVersionCommand(Player player) {
         final String version = plugin.getPluginMeta().getVersion();
-
-        if (!player.hasPermission("brightstpa.admin")) {
-            send(player, plugin.Message("messages.no_permission", placeholders));
-            return;
-        }
         placeholders.clear();
         placeholders.put("%version%", version);
         send(player, plugin.Message("messages.version", placeholders));
     }
 
     public void handleReloadCommand(Player player) {
-        if (!player.hasPermission("brightstpa.admin")) {
-            send(player, plugin.Message("messages.no_permission", placeholders));
-            return;
-        }
         try {
             plugin.saveDefaultConfig();
             plugin.reloadConfig();
@@ -188,10 +179,6 @@ public record HandleExecutor(BrightsTPA plugin) {
 
     public void handleTpaDenyCommand(Player receivePlayer, String[] args) {
         if (commandIsCooldown(receivePlayer, BrightsTPA.getCommandCooldown(), "tpdeny")) {
-            return;
-        }
-        if (!receivePlayer.hasPermission("brightstpa.tpdeny")) {
-            send(receivePlayer, plugin.Message("messages.no_permission", placeholders));
             return;
         }
         if (args.length > 0) {
@@ -242,10 +229,6 @@ public record HandleExecutor(BrightsTPA plugin) {
     public void handleTpaAcceptCommand(Player receivePlayer, String[] args) {
         if (commandIsCooldown(receivePlayer, BrightsTPA.getCommandCooldown(), "tpaccept")) return;
 
-        if (!receivePlayer.hasPermission("brightstpa.tpaccept")) {
-            send(receivePlayer, plugin.Message("messages.no_permission", placeholders));
-            return;
-        }
         if (args.length > 0) {
             acceptSpecificRequest(receivePlayer, Bukkit.getPlayer(args[0]));
         } else {
@@ -298,18 +281,6 @@ public record HandleExecutor(BrightsTPA plugin) {
 
     public void sendTeleportRequest(Player requestPlayer, Player receivePlayer, HashMap<UUID, Map<UUID, Long>> map, String type) {
         final int timeoutSecond = BrightsTPA.getRequestTimeout();
-
-        if (type.equals(getTpaTypePrefix())) {
-            if (!requestPlayer.hasPermission("brightstpa.tpa")) {
-                send(requestPlayer, plugin.Message("messages.no_permission", placeholders));
-                return;
-            }
-        } else if (type.equals(getTpahereTypePrefix())) {
-            if (!requestPlayer.hasPermission("brightstpa.tpahere")) {
-                send(requestPlayer, plugin.Message("messages.no_permission", placeholders));
-                return;
-            }
-        }
 
         if (isPlayerTeleporting(requestPlayer, "messages.no_request_while_tping")) {
             return;
@@ -405,10 +376,6 @@ public record HandleExecutor(BrightsTPA plugin) {
 
     public void handleTpaCancelCommand(Player requestPlayer, String[] args) {
         if (commandIsCooldown(requestPlayer, BrightsTPA.getCommandCooldown(), "tpacancel")) {
-            return;
-        }
-        if (!requestPlayer.hasPermission("brightstpa.tpacancel")) {
-            send(requestPlayer, plugin.Message("messages.no_permission", placeholders));
             return;
         }
         if (args.length > 0) {

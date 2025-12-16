@@ -48,15 +48,3 @@ permissions:
     default: true
   brightstpa.tpacancel:
     default: true
-  brightstpa.*:
-    default: false
-    children:
-      brightstpa.bypass.tpdelay: true
-      brightstpa.bypass.cooldown.command: true
-      brightstpa.bypass.cooldown.request: true
-      brightstpa.admin: true
-      brightstpa.tpdeny: true
-      brightstpa.tpaccept: true
-      brightstpa.tpa: true
-      brightstpa.tpahere: true
-      brightstpa.tpacancel: true

@@ -7,8 +7,9 @@
     <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Initial commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/CommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/CommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Format/TabComplete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Format/TabComplete.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/HandleExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/HandleExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,6 +112,7 @@
     "Gradle./home/brightforever/Desktop/java_projects/project_1/project_1 [wrapper].executor": "Run",
     "Gradle.Build prj1.executor": "Run",
     "Gradle.Build project_1.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
     "Gradle.prj1 [:runServer].executor": "Run",
     "Gradle.prj1 [build].executor": "Run",
     "Gradle.prj1 [runServer].executor": "Run",
@@ -319,7 +321,23 @@
       <option name="project" value="LOCAL" />
       <updated>1765859877101</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1765860480216</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1765860480216</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1765860572734</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1765860572734</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

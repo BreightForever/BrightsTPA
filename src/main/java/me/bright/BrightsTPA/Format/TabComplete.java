@@ -1,20 +1,21 @@
 package me.bright.BrightsTPA.Format;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.TabCompleteEvent;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.jspecify.annotations.NonNull;
 
-import java.lang.String;
 import java.util.List;
 
-public class TabComplete implements Listener {
+public class TabComplete implements TabCompleter {
 
-    @EventHandler
-    public void onTabComplete(TabCompleteEvent event) {
-        String buffer = event.getBuffer();
-
-        if (buffer.startsWith("/brightstpa")) {
-            event.setCompletions(List.of("reload", "version"));
+    @Override
+    public List<String> onTabComplete(@NonNull CommandSender sender, Command command, @NonNull String alias, String @NonNull [] args) {
+        if (command.getName().equalsIgnoreCase("brightstpa")) {
+            if (args.length == 1) {
+                return List.of("reload", "version");
+            }
         }
+        return null;
     }
 }
