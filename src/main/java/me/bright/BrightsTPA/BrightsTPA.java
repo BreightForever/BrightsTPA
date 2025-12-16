@@ -5,7 +5,7 @@ import me.bright.BrightsTPA.Commands.HandlerExecutor;
 import me.bright.BrightsTPA.Commands.TabComplete;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,10 +20,6 @@ public class BrightsTPA extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Plugin Loaded!");
         reloadAll();
-    }
-    public void reloadAll() {
-        saveDefaultConfig();
-        reloadConfig();
         CommandsHandler handler = new CommandsHandler(new HandlerExecutor(this));
         TabComplete tabComplete = new TabComplete();
         for (String name : getDescription().getCommands().keySet()) {
@@ -31,6 +27,11 @@ public class BrightsTPA extends JavaPlugin {
             cmd.setExecutor(handler);
             cmd.setTabCompleter(tabComplete);
         }
+    }
+    public void reloadAll() {
+        saveDefaultConfig();
+        reloadConfig();
+        reloadLang();
     }
     public int getRequestTimeout() {
         return getConfig().getInt("request-timeout", 0);
@@ -48,16 +49,21 @@ public class BrightsTPA extends JavaPlugin {
         return getConfig().getBoolean("cancel-on-move", false);
     }
 
-    public String msg(String path, Map<String, String> replacements) {
+    public FileConfiguration langConfig;
+    public void reloadLang() {
         File langFile = new File(getDataFolder(), "lang.yml");
-        Configuration langConfig = YamlConfiguration.loadConfiguration(langFile);
-
-        String message = langConfig.getString(path, "Message not found: " + path);
+        if (!langFile.exists()) {
+            saveResource("lang.yml", false);
+        }
+        langConfig = YamlConfiguration.loadConfiguration(langFile);
+    }
+    public String msg(String path, Map<String, String> replacements) {
+        String text = langConfig.isList(path) ? String.join("\n", langConfig.getStringList(path)) : langConfig.getString(path, "Unknown message");
         if (replacements != null) {
             for (Map.Entry<String, String> entry : replacements.entrySet()) {
-                message = message.replace(entry.getKey(), entry.getValue());
+                text = text.replace(entry.getKey(), entry.getValue());
             }
         }
-        return message;
+        return text;
     }
 }

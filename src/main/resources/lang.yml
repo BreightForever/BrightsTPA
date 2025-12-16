@@ -5,7 +5,6 @@ messages:
 
   command_cooldown: "&6You must wait &c%time% second(s) &6before using &c/%command% &6again."
   request_cooldown: "&6You must wait &c%time% second(s) &6before sending another request &6again."
-  no_permission: "&6You do not have permission to use this command."
   version: "&6BrightsTPA Version: &c%version%"
   config_reloaded: "&6Configuration reloaded successfully!"
   config_reloaded_failed: "&6Failed to reload config! Check console for details."
@@ -18,22 +17,19 @@ messages:
   no_player_found: "&6Player not found!"
   cant_do_that: "&6You cant do that!"
   player_is_tping: "&6That player is teleporting!"
-  tpa_message: |
-    &c%player% &6wants to TPA
-    &6Type &c/tpaccept &6to accept.
-    &6Type &c/tpdeny &6to deny.
-    &6You have &c%time% second(s) &6to respond.
-
-  tpahere_message: |
-    &c%player% &6wants to TPAHERE
-    &6Type &c/tpaccept &6to accept.
-    &6Type &c/tpdeny &6to deny.
-    &6You have &c%time% second(s) &6to respond.
-
-  send_request: |
-    &6Sent %type% request to &c%player%.
-    &6Type &c/tpacancel &6to cancel.
-
+  tpa_message:
+    - "&c%player% &6wants to TPA"
+    - "&6Type &c/tpaccept &6to accept."
+    - "&6Type &c/tpdeny &6to deny."
+    - "&6You have &c%time% second(s) &6to respond."
+  tpahere_message:
+    - "&c%player% &6wants to TPAHERE"
+    - "&6Type &c/tpaccept &6to accept."
+    - "&6Type &c/tpdeny &6to deny."
+    - "&6You have &c%time% second(s) &6to respond."
+  send_request:
+    - "&6Sent %type% request to &c%player%."
+    - "&6Type &c/tpacancel &6to cancel."
   no_request_while_tping: "&6You cannot send requests while teleporting!"
   player_not_online: "&6Player is not online!"
   already_request: "&6You already have a pending request to &c%player%&6!"
