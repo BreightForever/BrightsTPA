@@ -1,9 +1,11 @@
 package me.bright.BrightsTPA;
 
-import me.bright.BrightsTPA.Format.TabComplete;
+import me.bright.BrightsTPA.Commands.CommandsHandler;
+import me.bright.BrightsTPA.Commands.HandlerExecutor;
+import me.bright.BrightsTPA.Commands.TabComplete;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,56 +19,39 @@ public class BrightsTPA extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Plugin Loaded!");
+        reloadAll();
+    }
+    public void reloadAll() {
         saveDefaultConfig();
-        loadSettings();
-        loadLanguage();
-
-        HandleExecutor logicHandler = new HandleExecutor(this);
-        CommandHandler handler = new CommandHandler(logicHandler);
-
-        Objects.requireNonNull(getCommand("tpa")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("tpahere")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("tpaccept")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("tpdeny")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("tpyes")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("tpno")).setExecutor(handler);
-        Objects.requireNonNull(getCommand("tpacancel")).setExecutor(handler);
-
-        PluginCommand cmd = Objects.requireNonNull(getCommand("brightstpa"));
-        cmd.setExecutor(handler);
-        cmd.setTabCompleter(new TabComplete());
-    }
-
-    public static int requestTimeout;
-    public static int requestCooldown;
-    public static int commandCooldown;
-    public static int tpDelay;
-    public static boolean cancelOnMove;
-
-    public void loadSettings() {
-        requestTimeout = getConfig().getInt("request-timeout", 0);
-        requestCooldown = getConfig().getInt("request-cooldown", 0);
-        commandCooldown = getConfig().getInt("command-cooldown", 0);
-        tpDelay = getConfig().getInt("tp-delay", 0);
-        cancelOnMove = getConfig().getBoolean("cancel-on-move", false);
-    }
-
-    public static int getRequestTimeout() {return requestTimeout;}
-    public static int getRequestCooldown() {return requestCooldown;}
-    public static int getCommandCooldown() {return commandCooldown;}
-    public static int getTpDelay() {return tpDelay;}
-    public static boolean getCancelOnMove() {return cancelOnMove;}
-
-    public FileConfiguration langConfig;
-
-    public void loadLanguage() {
-        File langFile = new File(getDataFolder(), "lang.yml");
-        if (!langFile.exists()) {
-            saveResource("lang.yml", false);
+        reloadConfig();
+        CommandsHandler handler = new CommandsHandler(new HandlerExecutor(this));
+        TabComplete tabComplete = new TabComplete();
+        for (String name : getDescription().getCommands().keySet()) {
+            PluginCommand cmd = Objects.requireNonNull(getCommand(name),"Commands is missing from plugin.yml");
+            cmd.setExecutor(handler);
+            cmd.setTabCompleter(tabComplete);
         }
-        langConfig = YamlConfiguration.loadConfiguration(langFile);
     }
-    public String Message(String path, Map<String, String> replacements) {
+    public int getRequestTimeout() {
+        return getConfig().getInt("request-timeout", 0);
+    }
+    public int getRequestCooldown() {
+        return getConfig().getInt("request-cooldown", 0);
+    }
+    public int getCommandCooldown() {
+        return getConfig().getInt("command-cooldown", 0);
+    }
+    public int getTpDelay() {
+        return getConfig().getInt("tp-delay", 0);
+    }
+    public boolean getCancelOnMove() {
+        return getConfig().getBoolean("cancel-on-move", false);
+    }
+
+    public String msg(String path, Map<String, String> replacements) {
+        File langFile = new File(getDataFolder(), "lang.yml");
+        Configuration langConfig = YamlConfiguration.loadConfiguration(langFile);
+
         String message = langConfig.getString(path, "Message not found: " + path);
         if (replacements != null) {
             for (Map.Entry<String, String> entry : replacements.entrySet()) {

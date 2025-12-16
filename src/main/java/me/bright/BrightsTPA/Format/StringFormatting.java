@@ -14,7 +14,6 @@ public class StringFormatting {
         if (sender instanceof Player player) {
             msg = PlaceholderAPI.setPlaceholders(player, msg);
         }
-
         sender.sendMessage(LEGACY.deserialize(msg));
     }
 }

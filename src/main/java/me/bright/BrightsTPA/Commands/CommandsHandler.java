@@ -1,4 +1,4 @@
-package me.bright.BrightsTPA;
+package me.bright.BrightsTPA.Commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +9,7 @@ import org.jspecify.annotations.NonNull;
 
 import static me.bright.BrightsTPA.Format.StringFormatting.send;
 
-public record CommandHandler(HandleExecutor plugin) implements CommandExecutor {
+public record CommandsHandler(HandlerExecutor plugin) implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NonNull Command command, @NotNull String label, String @NonNull [] args) {

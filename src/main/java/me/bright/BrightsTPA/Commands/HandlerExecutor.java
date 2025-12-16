@@ -1,5 +1,6 @@
-package me.bright.BrightsTPA;
+package me.bright.BrightsTPA.Commands;
 
+import me.bright.BrightsTPA.BrightsTPA;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ import java.util.*;
 
 import static me.bright.BrightsTPA.Format.StringFormatting.send;
 
-public record HandleExecutor(BrightsTPA plugin) {
+public record HandlerExecutor(BrightsTPA plugin) {
 
     public static final HashMap<UUID, Map<UUID, Long>> tpaMap = new HashMap<>();
     public static final HashMap<UUID, Map<UUID, Long>> tpahereMap = new HashMap<>();
@@ -36,7 +37,7 @@ public record HandleExecutor(BrightsTPA plugin) {
 
     private boolean isPlayerTeleporting(Player player, String errorMessageKey) {
         if (teleportTasksMap.containsKey(player.getUniqueId())) {
-            send(player, plugin.Message(errorMessageKey, placeholders));
+            send(player, plugin.msg(errorMessageKey, placeholders));
             return true;
         }
         return false;
@@ -48,7 +49,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
 
         if (target == null) {
-            send(requester, plugin.Message("messages.no_player_found", placeholders));
+            send(requester, plugin.msg("messages.no_player_found", placeholders));
             return true;
         }
 
@@ -57,7 +58,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
 
         if (target.getUniqueId().equals(requester.getUniqueId())) {
-            send(requester, plugin.Message("messages.cant_do_that", placeholders));
+            send(requester, plugin.msg("messages.cant_do_that", placeholders));
             return true;
         }
 
@@ -65,11 +66,11 @@ public record HandleExecutor(BrightsTPA plugin) {
     }
 
     private String getTpaTypePrefix() {
-        return plugin.Message("messages.tpa_type_prefix", placeholders);
+        return plugin.msg("messages.tpa_type_prefix", placeholders);
     }
 
     private String getTpahereTypePrefix() {
-        return plugin.Message("messages.tpahere_type_prefix", placeholders);
+        return plugin.msg("messages.tpahere_type_prefix", placeholders);
     }
 
     private boolean hasRequestInMap(HashMap<UUID, Map<UUID, Long>> map, Player requestPlayer, Player receivePlayer) {
@@ -102,7 +103,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
 
         if (requestPlayer == null) {
-            send(receivePlayer, plugin.Message("messages.no_request", placeholders));
+            send(receivePlayer, plugin.msg("messages.no_request", placeholders));
             return;
         }
 
@@ -128,7 +129,7 @@ public record HandleExecutor(BrightsTPA plugin) {
                 placeholders.clear();
                 placeholders.put("%time%", String.valueOf(remaining));
                 placeholders.put("%command%", command);
-                send(player, plugin.Message("messages.command_cooldown", placeholders));
+                send(player, plugin.msg("messages.command_cooldown", placeholders));
                 return true;
             }
             commandCooldownsMap.put(player.getUniqueId(), currentTime);
@@ -147,7 +148,7 @@ public record HandleExecutor(BrightsTPA plugin) {
                 long remaining = (cooldownMillis - (currentTime - lastUse)) / 1000;
                 placeholders.clear();
                 placeholders.put("%time%", String.valueOf(remaining));
-                send(player, plugin.Message("messages.request_cooldown", placeholders));
+                send(player, plugin.msg("messages.request_cooldown", placeholders));
                 return true;
             }
             requestCooldownMap.put(player.getUniqueId(), currentTime);
@@ -157,28 +158,25 @@ public record HandleExecutor(BrightsTPA plugin) {
     }
 
     public void handleVersionCommand(Player player) {
-        final String version = plugin.getPluginMeta().getVersion();
+        final String version = plugin.getDescription().getVersion();
         placeholders.clear();
         placeholders.put("%version%", version);
-        send(player, plugin.Message("messages.version", placeholders));
+        send(player, plugin.msg("messages.version", placeholders));
     }
 
     public void handleReloadCommand(Player player) {
         try {
-            plugin.saveDefaultConfig();
-            plugin.reloadConfig();
-            plugin.loadLanguage();
-            plugin.loadSettings();
-            send(player, plugin.Message("messages.config_reloaded", placeholders));
+            plugin.reloadAll();
+            send(player, plugin.msg("messages.config_reloaded", placeholders));
         }
         catch (Exception e) {
             plugin.getLogger().severe("Failed to reload configuration: " + e.getMessage());
-            send(player, plugin.Message("messages.config_reloaded_failed", placeholders));
+            send(player, plugin.msg("messages.config_reloaded_failed", placeholders));
         }
     }
 
     public void handleTpaDenyCommand(Player receivePlayer, String[] args) {
-        if (commandIsCooldown(receivePlayer, BrightsTPA.getCommandCooldown(), "tpdeny")) {
+        if (commandIsCooldown(receivePlayer, plugin.getCommandCooldown(), "tpdeny")) {
             return;
         }
         if (args.length > 0) {
@@ -205,7 +203,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         } else {
             placeholders.clear();
             placeholders.put("%player%", requestPlayer.getName());
-            send(receivePlayer, plugin.Message("messages.no_request_from_player", placeholders));
+            send(receivePlayer, plugin.msg("messages.no_request_from_player", placeholders));
         }
     }
 
@@ -218,16 +216,16 @@ public record HandleExecutor(BrightsTPA plugin) {
         placeholders.clear();
         placeholders.put("%type%", type);
         placeholders.put("%player%", tpedPlayer.getName());
-        send(toPlayer, plugin.Message("messages.denied_request_from_player", placeholders));
+        send(toPlayer, plugin.msg("messages.denied_request_from_player", placeholders));
 
         placeholders.clear();
         placeholders.put("%type%", type);
         placeholders.put("%player%", toPlayer.getName());
-        send(tpedPlayer, plugin.Message("messages.denied_request", placeholders));
+        send(tpedPlayer, plugin.msg("messages.denied_request", placeholders));
     }
 
     public void handleTpaAcceptCommand(Player receivePlayer, String[] args) {
-        if (commandIsCooldown(receivePlayer, BrightsTPA.getCommandCooldown(), "tpaccept")) return;
+        if (commandIsCooldown(receivePlayer, plugin.getCommandCooldown(), "tpaccept")) return;
 
         if (args.length > 0) {
             acceptSpecificRequest(receivePlayer, Bukkit.getPlayer(args[0]));
@@ -253,7 +251,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         } else {
             placeholders.clear();
             placeholders.put("%player%", requestPlayer.getName());
-            send(receivePlayer, plugin.Message("messages.no_request_from_player", placeholders));
+            send(receivePlayer, plugin.msg("messages.no_request_from_player", placeholders));
         }
     }
 
@@ -280,19 +278,19 @@ public record HandleExecutor(BrightsTPA plugin) {
     }
 
     public void sendTeleportRequest(Player requestPlayer, Player receivePlayer, HashMap<UUID, Map<UUID, Long>> map, String type) {
-        final int timeoutSecond = BrightsTPA.getRequestTimeout();
+        final int timeoutSecond = plugin.getRequestTimeout();
 
         if (isPlayerTeleporting(requestPlayer, "messages.no_request_while_tping")) {
             return;
         }
 
         if (receivePlayer == null) {
-            send(requestPlayer, plugin.Message("messages.player_not_online", placeholders));
+            send(requestPlayer, plugin.msg("messages.player_not_online", placeholders));
             return;
         }
 
         if (receivePlayer.getUniqueId().equals(requestPlayer.getUniqueId())) {
-            send(requestPlayer, plugin.Message("messages.cant_do_that", placeholders));
+            send(requestPlayer, plugin.msg("messages.cant_do_that", placeholders));
             return;
         }
 
@@ -300,12 +298,12 @@ public record HandleExecutor(BrightsTPA plugin) {
         if (requests != null && requests.containsKey(receivePlayer.getUniqueId())) {
             placeholders.clear();
             placeholders.put("%player%", receivePlayer.getName());
-            send(requestPlayer, plugin.Message("messages.already_request", placeholders));
+            send(requestPlayer, plugin.msg("messages.already_request", placeholders));
             return;
         }
 
-        if (commandIsCooldown(requestPlayer, BrightsTPA.getCommandCooldown(), type.toLowerCase())
-                || requestIsCooldown(requestPlayer, BrightsTPA.getRequestCooldown())) {
+        if (commandIsCooldown(requestPlayer, plugin.getCommandCooldown(), type.toLowerCase())
+                || requestIsCooldown(requestPlayer, plugin.getRequestCooldown())) {
             return;
         }
 
@@ -315,16 +313,16 @@ public record HandleExecutor(BrightsTPA plugin) {
         placeholders.clear();
         placeholders.put("%player%", receivePlayer.getName());
         placeholders.put("%type%", type);
-        send(requestPlayer, plugin.Message("messages.send_request", placeholders));
+        send(requestPlayer, plugin.msg("messages.send_request", placeholders));
 
         placeholders.clear();
         placeholders.put("%player%", requestPlayer.getName());
         placeholders.put("%time%", String.valueOf(timeoutSecond));
 
         if (type.equals(getTpaTypePrefix())) {
-            send(receivePlayer, plugin.Message("messages.tpa_message", placeholders));
+            send(receivePlayer, plugin.msg("messages.tpa_message", placeholders));
         } else if (type.equals(getTpahereTypePrefix())) {
-            send(receivePlayer, plugin.Message("messages.tpahere_message", placeholders));
+            send(receivePlayer, plugin.msg("messages.tpahere_message", placeholders));
         }
 
         setRequestTimeout(requestPlayer, receivePlayer, map, type, timeoutSecond * 20L);
@@ -340,13 +338,13 @@ public record HandleExecutor(BrightsTPA plugin) {
                 placeholders.clear();
                 placeholders.put("%player%", receivePlayer.getName());
                 placeholders.put("%type%", type);
-                send(requestPlayer, plugin.Message("messages.request_timeout_from_player", placeholders));
+                send(requestPlayer, plugin.msg("messages.request_timeout_from_player", placeholders));
 
                 if (receiver != null && receiver.isOnline()) {
                     placeholders.clear();
                     placeholders.put("%player%", requestPlayer.getName());
                     placeholders.put("%type%", type);
-                    send(receiver, plugin.Message("messages.request_timeout", placeholders));
+                    send(receiver, plugin.msg("messages.request_timeout", placeholders));
                 }
 
                 timeoutTasksMap.remove(requestPlayer.getUniqueId());
@@ -364,18 +362,18 @@ public record HandleExecutor(BrightsTPA plugin) {
     }
 
     public void cancelTpOnMove(Player tpedPlayer, Player toPlayer, Player requestPlayer) {
-        send(tpedPlayer, plugin.Message("messages.tp_cancelled_move_from_player", placeholders));
+        send(tpedPlayer, plugin.msg("messages.tp_cancelled_move_from_player", placeholders));
 
         placeholders.clear();
         placeholders.put("%player%", tpedPlayer.getName());
-        send(toPlayer, plugin.Message("messages.tp_cancelled_move", placeholders));
+        send(toPlayer, plugin.msg("messages.tp_cancelled_move", placeholders));
 
         removeRequestFromMaps(requestPlayer, toPlayer);
         teleportTasksMap.remove(tpedPlayer.getUniqueId());
     }
 
     public void handleTpaCancelCommand(Player requestPlayer, String[] args) {
-        if (commandIsCooldown(requestPlayer, BrightsTPA.getCommandCooldown(), "tpacancel")) {
+        if (commandIsCooldown(requestPlayer, plugin.getCommandCooldown(), "tpacancel")) {
             return;
         }
         if (args.length > 0) {
@@ -398,7 +396,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         } else {
             placeholders.clear();
             placeholders.put("%player%", receivePlayer.getName());
-            send(requestPlayer, plugin.Message("messages.no_request_to_player", placeholders));
+            send(requestPlayer, plugin.msg("messages.no_request_to_player", placeholders));
         }
     }
 
@@ -420,7 +418,7 @@ public record HandleExecutor(BrightsTPA plugin) {
         }
 
         if (receivePlayer == null) {
-            send(requestPlayer, plugin.Message("messages.no_request", placeholders));
+            send(requestPlayer, plugin.msg("messages.no_request", placeholders));
             return;
         }
 
@@ -445,19 +443,19 @@ public record HandleExecutor(BrightsTPA plugin) {
         placeholders.clear();
         placeholders.put("%type%", type);
         placeholders.put("%player%", receivePlayer.getName());
-        send(requestPlayer, plugin.Message("messages.cancel_request_to_player", placeholders));
+        send(requestPlayer, plugin.msg("messages.cancel_request_to_player", placeholders));
 
         placeholders.clear();
         placeholders.put("%type%", type);
         placeholders.put("%player%", requestPlayer.getName());
-        send(receivePlayer, plugin.Message("messages.cancel_request", placeholders));
+        send(receivePlayer, plugin.msg("messages.cancel_request", placeholders));
     }
 
     public void tpacceptExecute(Player requestPlayer, Player receivePlayer, String type) {
-        final int delaySeconds = BrightsTPA.getTpDelay();
+        final int delaySeconds = plugin.getTpDelay();
         final Player tpedPlayer = type.equals(getTpaTypePrefix()) ? requestPlayer : receivePlayer;
         final Player toPlayer = type.equals(getTpaTypePrefix()) ? receivePlayer : requestPlayer;
-        final boolean isCancelOnMove = BrightsTPA.getCancelOnMove();
+        final boolean isCancelOnMove = plugin.getCancelOnMove();
         final Location startLocation = tpedPlayer.getLocation();
 
         if (!tpedPlayer.hasPermission("brightstpa.bypass.tpdelay")) {
@@ -465,13 +463,13 @@ public record HandleExecutor(BrightsTPA plugin) {
             placeholders.put("%time%", String.valueOf(delaySeconds));
             placeholders.put("%type%", type);
             placeholders.put("%player%", toPlayer.getName());
-            send(tpedPlayer, plugin.Message("messages.request_accept_from_player", placeholders));
+            send(tpedPlayer, plugin.msg("messages.request_accept_from_player", placeholders));
 
             placeholders.clear();
             placeholders.put("%time%", String.valueOf(delaySeconds));
             placeholders.put("%type%", type);
             placeholders.put("%player%", tpedPlayer.getName());
-            send(toPlayer, plugin.Message("messages.request_accept", placeholders));
+            send(toPlayer, plugin.msg("messages.request_accept", placeholders));
         }
 
         BukkitRunnable task = new BukkitRunnable() {
@@ -500,15 +498,15 @@ public record HandleExecutor(BrightsTPA plugin) {
 
     public void tpExecute(Player tpedPlayer, Player toPlayer, Player requestPlayer) {
         if (!tpedPlayer.isOnline() || !toPlayer.isOnline()) {
-            send(toPlayer, plugin.Message("messages.player_not_online", placeholders));
-            send(tpedPlayer, plugin.Message("messages.player_not_online", placeholders));
+            send(toPlayer, plugin.msg("messages.player_not_online", placeholders));
+            send(tpedPlayer, plugin.msg("messages.player_not_online", placeholders));
         } else {
             tpedPlayer.teleport(toPlayer.getLocation());
-            send(tpedPlayer, plugin.Message("messages.tp_success_from_player", placeholders));
+            send(tpedPlayer, plugin.msg("messages.tp_success_from_player", placeholders));
 
             placeholders.clear();
             placeholders.put("%player%", tpedPlayer.getName());
-            send(toPlayer, plugin.Message("messages.tp_success", placeholders));
+            send(toPlayer, plugin.msg("messages.tp_success", placeholders));
         }
 
         removeRequestFromMaps(requestPlayer, toPlayer);
