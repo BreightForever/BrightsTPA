@@ -6,7 +6,7 @@ version: ${version}
 author: ${author}
 
 softdepend: [PlaceholderAPI]
-
+#test
 commands:
   brightstpa:
     description: Reload the config or check version
