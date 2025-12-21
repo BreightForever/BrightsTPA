@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Refactor configuration access and add plugin unload message">
+    <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Refactor teleport request handling and enhance configuration management">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/HandlerExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/HandlerExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/BrightsTPA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/CommandsHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Commands/CommandsHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/HandlerExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Commands/HandlerExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/TabComplete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Commands/TabComplete.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Format/StringFormatting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Format/StringFormatting.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,47 +114,47 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Gradle./home/brightforever/Desktop/java_projects/project_1/project_1 [wrapper].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build prj1.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build project_1.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.prj1 [:runServer].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.prj1 [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.prj1 [runServer].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.prj1.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.project_1 [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.project_1 [jar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.project_1 [processResources].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-vcs.commit.checks.failed&quot;: &quot;Commit and push checks failed&quot;,
-    &quot;Notification.DoNotAsk-vcs.commit.checks.failed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/home/brightforever/.local/share/JetBrains/IdeaIC2025.2/Shell Script/shellcheck&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/brightforever/Desktop/java_projects/BrightsTPA&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "Gradle./home/brightforever/Desktop/java_projects/project_1/project_1 [wrapper].executor": "Run",
+    "Gradle.Build prj1.executor": "Run",
+    "Gradle.Build project_1.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.prj1 [:runServer].executor": "Run",
+    "Gradle.prj1 [build].executor": "Run",
+    "Gradle.prj1 [runServer].executor": "Run",
+    "Gradle.prj1.executor": "Run",
+    "Gradle.project_1 [build].executor": "Run",
+    "Gradle.project_1 [jar].executor": "Run",
+    "Gradle.project_1 [processResources].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-vcs.commit.checks.failed": "Commit and push checks failed",
+    "Notification.DoNotAsk-vcs.commit.checks.failed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHELLCHECK.PATH": "/home/brightforever/.local/share/JetBrains/IdeaIC2025.2/Shell Script/shellcheck",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "deletionFromPopupRequiresConfirmation": "false",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/brightforever/Desktop/java_projects/BrCore",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="me.bright.BrightsTPA" />
@@ -389,7 +395,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766322676690</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Refactor teleport request handling and enhance configuration management">
+      <option name="closed" value="true" />
+      <created>1766327572349</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1766327572349</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -430,7 +444,8 @@
     <MESSAGE value="Update paper API from 1.21.10 -&gt; 1.21.11" />
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Refactor configuration access and add plugin unload message" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor configuration access and add plugin unload message" />
+    <MESSAGE value="Refactor teleport request handling and enhance configuration management" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor teleport request handling and enhance configuration management" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

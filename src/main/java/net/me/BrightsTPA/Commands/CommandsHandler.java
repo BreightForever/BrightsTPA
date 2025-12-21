@@ -1,4 +1,4 @@
-package me.bright.BrightsTPA.Commands;
+package net.me.BrightsTPA.Commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
-import static me.bright.BrightsTPA.Format.StringFormatting.send;
+import static net.me.BrightsTPA.Format.StringFormatting.send;
 
 public record CommandsHandler(HandlerExecutor plugin) implements CommandExecutor {
 

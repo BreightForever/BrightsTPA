@@ -1,6 +1,6 @@
-package me.bright.BrightsTPA.Commands;
+package net.me.BrightsTPA.Commands;
 
-import me.bright.BrightsTPA.BrightsTPA;
+import net.me.BrightsTPA.BrightsTPA;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-import static me.bright.BrightsTPA.Format.StringFormatting.send;
+import static net.me.BrightsTPA.Format.StringFormatting.send;
 
 public record HandlerExecutor(BrightsTPA plugin) {
 

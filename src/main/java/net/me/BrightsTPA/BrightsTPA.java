@@ -1,8 +1,8 @@
-package me.bright.BrightsTPA;
+package net.me.BrightsTPA;
 
-import me.bright.BrightsTPA.Commands.CommandsHandler;
-import me.bright.BrightsTPA.Commands.HandlerExecutor;
-import me.bright.BrightsTPA.Commands.TabComplete;
+import net.me.BrightsTPA.Commands.CommandsHandler;
+import net.me.BrightsTPA.Commands.HandlerExecutor;
+import net.me.BrightsTPA.Commands.TabComplete;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -1,4 +1,4 @@
-package me.bright.BrightsTPA.Commands;
+package net.me.BrightsTPA.Commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
