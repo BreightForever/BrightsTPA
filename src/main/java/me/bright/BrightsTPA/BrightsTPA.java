@@ -16,6 +16,11 @@ import java.util.Objects;
 public class BrightsTPA extends JavaPlugin {
     public static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
     private FileConfiguration langConfig;
+    public int RequestTimeout;
+    public int RequestCooldown;
+    public int CommandCooldown;
+    public int TpDelay;
+    public boolean CancelOnMove;
 
     @Override
     public void onDisable() {
@@ -34,16 +39,22 @@ public class BrightsTPA extends JavaPlugin {
             cmd.setTabCompleter(tabComplete);
         }
     }
+
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+        RequestTimeout = getConfig().getInt("request-timeout", 0);
+        RequestCooldown = getConfig().getInt("request-cooldown", 0);
+        CommandCooldown = getConfig().getInt("command-cooldown", 0);
+        TpDelay = getConfig().getInt("tp-delay", 0);
+        CancelOnMove = getConfig().getBoolean("cancel-on-move", false);
+    }
+
     public void reloadAll() {
         saveDefaultConfig();
         reloadConfig();
         reloadLang();
     }
-    public final int RequestTimeout = getConfig().getInt("request-timeout", 0);
-    public final int RequestCooldown = getConfig().getInt("request-cooldown", 0);
-    public final int CommandCooldown = getConfig().getInt("command-cooldown", 0);
-    public final int TpDelay = getConfig().getInt("tp-delay", 0);
-    public final boolean CancelOnMove = getConfig().getBoolean("cancel-on-move", false);
 
     public void reloadLang() {
         File langFile = new File(getDataFolder(), "lang.yml");

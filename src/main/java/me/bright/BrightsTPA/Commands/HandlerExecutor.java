@@ -35,16 +35,16 @@ public record HandlerExecutor(BrightsTPA plugin) {
         }
     }
 
-    private boolean isPlayerTeleporting(Player player, String errorMessageKey) {
-        if (teleportTasksMap.containsKey(player.getUniqueId())) {
-            send(player, plugin.msg(errorMessageKey, placeholders));
+    private boolean isPlayerTeleporting(Player tpedPlayer, Player toPlayer, String errorMessageKey) {
+        if (teleportTasksMap.containsKey(tpedPlayer.getUniqueId())) {
+            send(toPlayer, plugin.msg(errorMessageKey, placeholders));
             return true;
         }
         return false;
     }
 
     private boolean failsBasicRequestValidation(Player requester, Player target) {
-        if (isPlayerTeleporting(requester, "messages.cant_do_that")) {
+        if (isPlayerTeleporting(requester, requester, "messages.cant_do_that")) {
             return true;
         }
 
@@ -53,7 +53,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
             return true;
         }
 
-        if (isPlayerTeleporting(target, "messages.player_is_tping")) {
+        if (isPlayerTeleporting(target, requester, "messages.player_is_tping")) {
             return true;
         }
 
@@ -98,7 +98,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
             requestPlayer = getLastestRequestReceiver(tpahereMap, receivePlayer);
         }
 
-        if (isPlayerTeleporting(receivePlayer, "messages.cant_do_that")) {
+        if (isPlayerTeleporting(receivePlayer, receivePlayer, "messages.cant_do_that")) {
             return;
         }
 
@@ -107,7 +107,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
             return;
         }
 
-        if (isPlayerTeleporting(requestPlayer, "messages.player_is_tping")) {
+        if (isPlayerTeleporting(requestPlayer, receivePlayer, "messages.player_is_tping")) {
             return;
         }
 
@@ -280,7 +280,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
     public void sendTeleportRequest(Player requestPlayer, Player receivePlayer, HashMap<UUID, Map<UUID, Long>> map, String type) {
         final int timeoutSecond = plugin.RequestTimeout;
 
-        if (isPlayerTeleporting(requestPlayer, "messages.no_request_while_tping")) {
+        if (isPlayerTeleporting(requestPlayer, requestPlayer, "messages.no_request_while_tping")) {
             return;
         }
 
@@ -361,14 +361,14 @@ public record HandlerExecutor(BrightsTPA plugin) {
         }
     }
 
-    public void cancelTpOnMove(Player tpedPlayer, Player toPlayer, Player requestPlayer) {
+    public void cancelTpOnMove(Player tpedPlayer, Player toPlayer, Player requestPlayer, Player receivePlayer) {
         send(tpedPlayer, plugin.msg("messages.tp_cancelled_move_from_player", placeholders));
 
         placeholders.clear();
         placeholders.put("%player%", tpedPlayer.getName());
         send(toPlayer, plugin.msg("messages.tp_cancelled_move", placeholders));
 
-        removeRequestFromMaps(requestPlayer, toPlayer);
+        removeRequestFromMaps(requestPlayer, receivePlayer);
         teleportTasksMap.remove(tpedPlayer.getUniqueId());
     }
 
@@ -422,11 +422,11 @@ public record HandlerExecutor(BrightsTPA plugin) {
             return;
         }
 
-        if (isPlayerTeleporting(requestPlayer, "messages.cant_do_that")) {
+        if (isPlayerTeleporting(requestPlayer, requestPlayer, "messages.cant_do_that")) {
             return;
         }
 
-        if (isPlayerTeleporting(receivePlayer, "messages.player_is_tping")) {
+        if (isPlayerTeleporting(receivePlayer, requestPlayer, "messages.player_is_tping")) {
             return;
         }
 
@@ -484,10 +484,10 @@ public record HandlerExecutor(BrightsTPA plugin) {
 
                 Location currentLocation = tpedPlayer.getLocation();
                 if (elapsed >= delaySeconds * 20) {
-                    tpExecute(tpedPlayer, toPlayer, requestPlayer);
+                    tpExecute(tpedPlayer, toPlayer, requestPlayer, receivePlayer);
                     cancel();
                 } else if (!currentLocation.getBlock().equals(startLocation.getBlock()) && isCancelOnMove) {
-                    cancelTpOnMove(tpedPlayer, toPlayer, requestPlayer);
+                    cancelTpOnMove(tpedPlayer, toPlayer, requestPlayer, receivePlayer);
                     cancel();
                 }
             }
@@ -496,7 +496,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
         teleportTasksMap.put(tpedPlayer.getUniqueId(), task);
     }
 
-    public void tpExecute(Player tpedPlayer, Player toPlayer, Player requestPlayer) {
+    public void tpExecute(Player tpedPlayer, Player toPlayer, Player requestPlayer, Player receivePlayer) {
         if (!tpedPlayer.isOnline() || !toPlayer.isOnline()) {
             send(toPlayer, plugin.msg("messages.player_not_online", placeholders));
             send(tpedPlayer, plugin.msg("messages.player_not_online", placeholders));
@@ -509,7 +509,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
             send(toPlayer, plugin.msg("messages.tp_success", placeholders));
         }
 
-        removeRequestFromMaps(requestPlayer, toPlayer);
+        removeRequestFromMaps(requestPlayer, receivePlayer);
         teleportTasksMap.remove(tpedPlayer.getUniqueId());
     }
 }
