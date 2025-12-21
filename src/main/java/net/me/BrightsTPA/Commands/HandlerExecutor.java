@@ -3,6 +3,7 @@ package net.me.BrightsTPA.Commands;
 import net.me.BrightsTPA.BrightsTPA;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -157,14 +158,14 @@ public record HandlerExecutor(BrightsTPA plugin) {
         return false;
     }
 
-    public void handleVersionCommand(Player player) {
+    public void handleVersionCommand(CommandSender player) {
         final String version = plugin.getDescription().getVersion();
         placeholders.clear();
         placeholders.put("%version%", version);
         send(player, plugin.msg("messages.version", placeholders));
     }
 
-    public void handleReloadCommand(Player player) {
+    public void handleReloadCommand(CommandSender player) {
         try {
             plugin.reloadAll();
             send(player, plugin.msg("messages.config_reloaded", placeholders));

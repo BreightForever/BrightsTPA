@@ -50,10 +50,10 @@ public record CommandsHandler(HandlerExecutor plugin) implements CommandExecutor
             }
             case "brightstpa" -> {
                 if (args.length > 0 && args[0].equalsIgnoreCase("version")) {
-                    plugin.handleVersionCommand((Player) sender);
+                    plugin.handleVersionCommand(sender);
                 }
                 else if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
-                    plugin.handleReloadCommand((Player) sender);
+                    plugin.handleReloadCommand(sender);
                 }
                 return true;
             }
