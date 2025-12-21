@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Refactor teleport request handling and enhance configuration management">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/BrightsTPA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/CommandsHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Commands/CommandsHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/HandlerExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Commands/HandlerExecutor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/TabComplete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Commands/TabComplete.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Format/StringFormatting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/me/BrightsTPA/Format/StringFormatting.java" afterDir="false" />
+    <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Refactor package structure from 'me.bright' to 'net.me' and update Gradle plugin version">
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +129,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHELLCHECK.PATH": "/home/brightforever/.local/share/JetBrains/IdeaIC2025.2/Shell Script/shellcheck",
+    "SHELLCHECK.PATH": "/home/brightforever/.local/share/JetBrains/IntelliJIdea2025.3/Shell Script/shellcheck",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "master",
@@ -163,7 +156,7 @@
       <recent name="me.bright.BrightsTPA" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.prj1 [build]">
+  <component name="RunManager" selected="Gradle.prj1 [:runServer]">
     <configuration name="prj1 [:runServer]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -403,7 +396,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766327572349</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Refactor package structure from 'me.bright' to 'net.me' and update Gradle plugin version">
+      <option name="closed" value="true" />
+      <created>1766330875055</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1766330875055</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -445,7 +446,8 @@
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Refactor configuration access and add plugin unload message" />
     <MESSAGE value="Refactor teleport request handling and enhance configuration management" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor teleport request handling and enhance configuration management" />
+    <MESSAGE value="Refactor package structure from 'me.bright' to 'net.me' and update Gradle plugin version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor package structure from 'me.bright' to 'net.me' and update Gradle plugin version" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
