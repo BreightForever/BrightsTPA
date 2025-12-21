@@ -176,7 +176,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
     }
 
     public void handleTpaDenyCommand(Player receivePlayer, String[] args) {
-        if (commandIsCooldown(receivePlayer, plugin.getCommandCooldown(), "tpdeny")) {
+        if (commandIsCooldown(receivePlayer, plugin.CommandCooldown, "tpdeny")) {
             return;
         }
         if (args.length > 0) {
@@ -225,7 +225,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
     }
 
     public void handleTpaAcceptCommand(Player receivePlayer, String[] args) {
-        if (commandIsCooldown(receivePlayer, plugin.getCommandCooldown(), "tpaccept")) return;
+        if (commandIsCooldown(receivePlayer, plugin.CommandCooldown, "tpaccept")) return;
 
         if (args.length > 0) {
             acceptSpecificRequest(receivePlayer, Bukkit.getPlayer(args[0]));
@@ -278,7 +278,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
     }
 
     public void sendTeleportRequest(Player requestPlayer, Player receivePlayer, HashMap<UUID, Map<UUID, Long>> map, String type) {
-        final int timeoutSecond = plugin.getRequestTimeout();
+        final int timeoutSecond = plugin.RequestTimeout;
 
         if (isPlayerTeleporting(requestPlayer, "messages.no_request_while_tping")) {
             return;
@@ -302,8 +302,8 @@ public record HandlerExecutor(BrightsTPA plugin) {
             return;
         }
 
-        if (commandIsCooldown(requestPlayer, plugin.getCommandCooldown(), type.toLowerCase())
-                || requestIsCooldown(requestPlayer, plugin.getRequestCooldown())) {
+        if (commandIsCooldown(requestPlayer, plugin.CommandCooldown, type.toLowerCase())
+                || requestIsCooldown(requestPlayer, plugin.RequestCooldown)) {
             return;
         }
 
@@ -373,7 +373,7 @@ public record HandlerExecutor(BrightsTPA plugin) {
     }
 
     public void handleTpaCancelCommand(Player requestPlayer, String[] args) {
-        if (commandIsCooldown(requestPlayer, plugin.getCommandCooldown(), "tpacancel")) {
+        if (commandIsCooldown(requestPlayer, plugin.CommandCooldown, "tpacancel")) {
             return;
         }
         if (args.length > 0) {
@@ -452,10 +452,10 @@ public record HandlerExecutor(BrightsTPA plugin) {
     }
 
     public void tpacceptExecute(Player requestPlayer, Player receivePlayer, String type) {
-        final int delaySeconds = plugin.getTpDelay();
+        final int delaySeconds = plugin.TpDelay;
         final Player tpedPlayer = type.equals(getTpaTypePrefix()) ? requestPlayer : receivePlayer;
         final Player toPlayer = type.equals(getTpaTypePrefix()) ? receivePlayer : requestPlayer;
-        final boolean isCancelOnMove = plugin.getCancelOnMove();
+        final boolean isCancelOnMove = plugin.CancelOnMove;
         final Location startLocation = tpedPlayer.getLocation();
 
         if (!tpedPlayer.hasPermission("brightstpa.bypass.tpdelay")) {

@@ -7,6 +7,8 @@
     <list default="true" id="5d396827-4912-498a-bb93-d7a1d22e74ed" name="Changes" comment="Initial commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/BrightsTPA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/HandlerExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Commands/HandlerExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Format/StringFormatting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/bright/BrightsTPA/Format/StringFormatting.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +90,10 @@
     &quot;accountId&quot;: &quot;1cf87de1-d7be-4606-9a58-d45df585f5cc&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -120,6 +126,7 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;Notification.DisplayName-DoNotAsk-vcs.commit.checks.failed&quot;: &quot;Commit and push checks failed&quot;,
     &quot;Notification.DoNotAsk-vcs.commit.checks.failed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -138,7 +145,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -210,8 +217,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
-        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
+        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
       </set>
     </attachedChunks>
   </component>
@@ -232,7 +238,13 @@
       <workItem from="1765882373362" duration="6753000" />
       <workItem from="1765891628488" duration="195000" />
       <workItem from="1765894355137" duration="227000" />
-      <workItem from="1765900104883" duration="482000" />
+      <workItem from="1765900104883" duration="1906000" />
+      <workItem from="1765985878394" duration="22000" />
+      <workItem from="1766014063296" duration="30000" />
+      <workItem from="1766014134420" duration="28000" />
+      <workItem from="1766014765046" duration="23000" />
+      <workItem from="1766014836841" duration="36000" />
+      <workItem from="1766014902750" duration="32000" />
     </task>
     <task id="LOCAL-00001" summary="nothing">
       <option name="closed" value="true" />
@@ -362,7 +374,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765889098793</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1765900667900</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1765900667900</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -403,5 +423,13 @@
     <MESSAGE value="Update paper API from 1.21.10 -&gt; 1.21.11" />
     <MESSAGE value="Initial commit" />
     <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

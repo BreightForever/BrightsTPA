@@ -8,9 +8,7 @@ import static me.bright.BrightsTPA.BrightsTPA.LEGACY;
 
 public class StringFormatting {
     public static void send(CommandSender sender, java.lang.String msg, Object... args) {
-
         msg = java.lang.String.format(msg, args);
-
         if (sender instanceof Player player) {
             msg = PlaceholderAPI.setPlaceholders(player, msg);
         }

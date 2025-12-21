@@ -15,6 +15,12 @@ import java.util.Objects;
 
 public class BrightsTPA extends JavaPlugin {
     public static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
+    private FileConfiguration langConfig;
+
+    @Override
+    public void onDisable() {
+        getLogger().info("Plugin Unloaded!");
+    }
 
     @Override
     public void onEnable() {
@@ -33,27 +39,23 @@ public class BrightsTPA extends JavaPlugin {
         reloadConfig();
         reloadLang();
     }
-    public int getRequestTimeout() {
-        return getConfig().getInt("request-timeout", 0);
-    }
-    public int getRequestCooldown() {
-        return getConfig().getInt("request-cooldown", 0);
-    }
-    public int getCommandCooldown() {
-        return getConfig().getInt("command-cooldown", 0);
-    }
-    public int getTpDelay() {
-        return getConfig().getInt("tp-delay", 0);
-    }
-    public boolean getCancelOnMove() {
-        return getConfig().getBoolean("cancel-on-move", false);
-    }
+    public final int RequestTimeout = getConfig().getInt("request-timeout", 0);
+    public final int RequestCooldown = getConfig().getInt("request-cooldown", 0);
+    public final int CommandCooldown = getConfig().getInt("command-cooldown", 0);
+    public final int TpDelay = getConfig().getInt("tp-delay", 0);
+    public final boolean CancelOnMove = getConfig().getBoolean("cancel-on-move", false);
 
-    public FileConfiguration langConfig;
     public void reloadLang() {
-        langConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "lang.yml"));
+        File langFile = new File(getDataFolder(), "lang.yml");
+        if (!langFile.exists()) {
+            saveResource("lang.yml", false);
+        }
+        langConfig = YamlConfiguration.loadConfiguration(langFile);
     }
     public String msg(String path, Map<String, String> replacements) {
+        if (langConfig == null) {
+            reloadLang();
+        }
         String text = langConfig.isList(path) ? String.join("\n", langConfig.getStringList(path)) : langConfig.getString(path, "Unknown message");
         if (replacements != null) {
             for (Map.Entry<String, String> entry : replacements.entrySet()) {
